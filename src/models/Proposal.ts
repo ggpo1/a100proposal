@@ -1,3 +1,9 @@
+import TempEnum from "./enums/TempEnum";
+import NightDayEnum from "./enums/NightDayEnum";
+import WeekOrWeekendEnum from "./enums/WeekOrWeekendEnum";
+import IsPassportEnum from "./enums/IsPassportEnum";
+import EquipmentTypeEnum from "./enums/EquipmentTypeEnum";
+
 interface IGeneralInfo {
     companyName: string,
     customerFullName: string,
@@ -7,9 +13,9 @@ interface IGeneralInfo {
 }
 
 interface passportInfo {
-    passport: string,
+    passport: IsPassportEnum,
     equipmentManufacturer: string,
-    equipmentType: string,
+    equipmentType: EquipmentTypeEnum,
     epmCount: number,
     rackHeight: number,
     ratedLoad: {
@@ -22,10 +28,10 @@ interface warehouseInfo {
     address: string,
     name: string,
     storageVolume: string,
-    temp: string,
+    temp: TempEnum,
     time: {
-        startTime: Date,
-        endTime: Date,
+        nightDay: NightDayEnum,
+        weekOrWeekend: WeekOrWeekendEnum,
     },
     equipmentProvision: string,
     passports: Array<passportInfo>,
