@@ -1,0 +1,21 @@
+@media screen and (orientation:portrait) {
+    .proposal {
+        display: flex;
+        width: 90%;
+        height: 95%;
+
+        background: white;
+    }
+}
+
+@media screen and (orientation:landscape) {
+
+    .proposal {
+        display: flex;
+        width: 60%;
+        height: 95%;
+
+        background: white;
+    }
+
+}
