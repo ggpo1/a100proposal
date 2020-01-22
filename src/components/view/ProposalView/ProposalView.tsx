@@ -12,7 +12,6 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
     }
 
     render() {
-        
         return (
             <div
                 className={'proposal'}
