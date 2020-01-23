@@ -1,3 +1,5 @@
-export default interface IProposalViewState {
+import Proposal from "../../Proposal";
 
+export default interface IProposalViewState {
+    source: Proposal
 }
