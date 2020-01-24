@@ -17,8 +17,8 @@ interface passportInfo {
     passport: string,
     equipmentManufacturer: string,
     equipmentType: string,
-    epmCount: number,
-    rackHeight: number,
+    epmCount: string,
+    rackHeight: string,
     ratedLoad: {
         forCell: string,
         forPallet: string,
@@ -42,7 +42,7 @@ interface equipmentInformation {
     warehouseCount: number,
     warehousesInfo: Array<warehouseInfo>,
     pto: string,
-    price: Decimal,
+    price: string,
     days: string,
 }
 
@@ -54,7 +54,7 @@ interface staticTests {
     controlCargoType: string,
     controlCargoDelivery: string,
     staticTestsEquipmentProvision: string,
-    price: Decimal
+    price: string
 }
 
 interface EquipmentCalculations {
@@ -88,7 +88,7 @@ interface EquipmentCalculations {
 }
 
 export default interface Proposal {
-    date: Date,
+    date: string,
     general: IGeneralInfo,
     equipmentInfo: equipmentInformation,
     stillagesStaticTests: staticTests

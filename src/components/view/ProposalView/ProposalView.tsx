@@ -1,82 +1,23 @@
-import React, { Component } from 'react';
+import React, {Component, isValidElement} from 'react';
 import IProposalViewProps from "../../../models/components/ProposalView/IProposalViewProps";
 import IProposalViewState from "../../../models/components/ProposalView/IProposalViewState";
 import './ProposalView.css';
 import './ToggleButton.css';
 import IsPassportEnum from "../../../models/enums/IsPassportEnum";
 import Decimal from 'decimal.js';
+import DataLists from "../../../data/static/DataLists";
+import ProposalViewSource from "../../../data/static/ProposalViewSource";
 
 export default class ProposalView extends Component<IProposalViewProps, IProposalViewState> {
 
     constructor(props: IProposalViewProps) {
         super(props);
         this.state = {
-            source: {
-                date: new Date(),
-                general: {
-                    companyName: '',
-                    customerFullName: '',
-                    customerPosition: '',
-                    customerEmail: '',
-                    customerPhoneNumber: ''
-                },
-                equipmentInfo: {
-                    warehouseCount: 0,
-                    warehousesInfo: [],
-                    pto: '',
-                    price: new Decimal(0),
-                    days: ''
-                },
-                stillagesStaticTests: {
-                    isTesting: false,
-                    testsCount: 0,
-                    testsType: '',
-                    controlsProvision: '',
-                    controlCargoType: '',
-                    controlCargoDelivery: '',
-                    staticTestsEquipmentProvision: '',
-                    price: new Decimal(0)
-                },
-                equipmentCalculations: {
-                    eqtCalculations1: {
-                        type: '',
-                        typesCount: '',
-                        oneTypePrice: new Decimal(0),
-                        fullPrice: new Decimal(0)
-                    },
-                    needPassport1: {
-                        type: '',
-                        typesCount: '',
-                        oneTypePrice: new Decimal(0),
-                        fullPrice: new Decimal(0)
-                    },
-                    eqtCalculations2: {
-                        type: '',
-                        typesCount: '',
-                        oneTypePrice: new Decimal(0),
-                        fullPrice: new Decimal(0)
-                    },
-                    needPassport2: {
-                        type: '',
-                        typesCount: '',
-                        oneTypePrice: new Decimal(0),
-                        fullPrice: new Decimal(0)
-                    },
-                    windOrSnowTests: false,
-                    price: new Decimal(0),
-                    daysForWork: ''
-                },
-                fullPrice: new Decimal(0),
-                paymentType: '',
-                manager: {
-                    fullName: '',
-                    position: '',
-                    cellPhone: '',
-                    workPhone: '',
-                    email: ''
-                }
-            }
-        }
+            selectedWarehouse: 0,
+            source: ProposalViewSource.source
+        };
+
+        this.state.source.date = this.getCurrentDate;
     }
 
     public get getCurrentDate(): string {
@@ -86,7 +27,6 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
 
     updateValue = (fieldName: string, value: string) => {
         const { source } = this.state;
-        console.log(fieldName);
         switch (fieldName) {
             case 'companyName':
                 source.general.companyName = value;
@@ -103,6 +43,34 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
             case 'customerPhone':
                 source.general.customerPhoneNumber = value;
                 break;
+            case 'pto':
+                source.equipmentInfo.pto = value;
+                break;
+            case 'eqInfoPrice':
+                source.equipmentInfo.price = value;
+                break;
+            case 'eqInfoDays':
+                source.equipmentInfo.days = value;
+                break;
+            case 'testsType':
+                source.stillagesStaticTests.testsType = value;
+                break;
+            case 'cargoProvision':
+                source.stillagesStaticTests.controlsProvision = value;
+                break;
+            case 'controlCargoType':
+                source.stillagesStaticTests.controlCargoType = value;
+                break;
+            case 'controlCargoDelivery':
+                source.stillagesStaticTests.controlCargoDelivery = value;
+                break;
+            case 'staticTestsEquipmentProvision':
+                source.stillagesStaticTests.staticTestsEquipmentProvision = value;
+                break;
+            case 'staticTestsPrice':
+                source.stillagesStaticTests.price = value;
+                break;
+
 
 
             case 'isStaticTests':
@@ -134,51 +102,200 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
 
     deleteWarehouse = (index: number) => {
         const { source } = this.state;
-        source.equipmentInfo.warehousesInfo.splice(index, 1);
-        this.forceUpdate(() => this.setState({source}));
+        source.equipmentInfo.warehousesInfo = source.equipmentInfo.warehousesInfo.splice(index, 1);
+        this.setState({source});
+    };
+
+    updateWarehouseValues = (fieldName: string, index: number, value: string) => {
+        const { source } = this.state;
+        switch (fieldName) {
+            case 'address': {
+                source.equipmentInfo.warehousesInfo[index].address = value;
+                break;
+            }
+            case 'name': {
+                source.equipmentInfo.warehousesInfo[index].name = value;
+                break;
+            }
+            case 'storageVolume': {
+                source.equipmentInfo.warehousesInfo[index].storageVolume = value;
+                break;
+            }
+            case 'temp': {
+                source.equipmentInfo.warehousesInfo[index].temp = value;
+                break;
+            }
+            case 'nightDay': {
+                source.equipmentInfo.warehousesInfo[index].time.nightDay = value;
+                break;
+            }
+            case 'weekOrWeekend': {
+                source.equipmentInfo.warehousesInfo[index].time.weekOrWeekend = value;
+                break;
+            }
+            case 'equipmentProvision': {
+                source.equipmentInfo.warehousesInfo[index].equipmentProvision = value;
+                break;
+            }
+        }
+        this.setState({ source });
+    };
+
+    updateWarehousePassports = (fieldName: string, wIndex: number, pIndex: number, value: string) => {
+        const { source, selectedWarehouse } = this.state;
+        switch (fieldName) {
+            case 'passport': {
+                source.equipmentInfo.warehousesInfo[wIndex].passports[pIndex].passport = value;
+                break;
+            }
+            case 'eqManufacturer': {
+                source.equipmentInfo.warehousesInfo[wIndex].passports[pIndex].equipmentManufacturer = value;
+                break;
+            }
+            case 'eqType': {
+                source.equipmentInfo.warehousesInfo[wIndex].passports[pIndex].equipmentType = value;
+                break;
+            }
+            case 'epmCount': {
+                source.equipmentInfo.warehousesInfo[wIndex].passports[pIndex].epmCount = value;
+                break;
+            }
+            case 'rackHeight': {
+                source.equipmentInfo.warehousesInfo[wIndex].passports[pIndex].rackHeight = value;
+                break;
+            }
+            case 'forCell': {
+                source.equipmentInfo.warehousesInfo[wIndex].passports[pIndex].ratedLoad.forCell = value;
+                break;
+            }
+            case 'forPallet': {
+                source.equipmentInfo.warehousesInfo[wIndex].passports[pIndex].ratedLoad.forPallet = value;
+                break;
+            }
+        }
+
+        this.setState({source});
     };
 
     render() {
         const { source } = this.state;
         let warehouses: Array<JSX.Element> = [];
         let staticTests;
+        let warehousesTableRows: Array<JSX.Element> = [];
+        let staticTestsTableRows: Array<JSX.Element> = [];
+
+        let warehouseTemps: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let nightDayOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let weekOrWeekendOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let equipmentProvisionOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let isPassportOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let equipmentManufacturerOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let equipmentTypeOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let rackHeightOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let ptoOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let testsTypeOptions: Array<JSX.Element> = [<option value="null"> не выбрано</option>];
+        let staticTestsEquipmentProvisionOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let controlCargoTypeOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let controlCargoDeliveryOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+        let eqCalculationsTypeOptions: Array<JSX.Element> = [<option value="null">не выбрано</option>];
+
+        DataLists.TempValuesList.forEach((el) => warehouseTemps.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.NightDayValuesList.forEach((el) => nightDayOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.WeekOrWeekendValuesList.forEach((el) => weekOrWeekendOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.EquipmentProvisionValuesList.forEach((el) => equipmentProvisionOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.IsPassportValuesList.forEach((el) => isPassportOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.EquipmentManufacturerValuesList.forEach((el) => equipmentManufacturerOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.EquipmentTypeValuesList.forEach((el) => equipmentTypeOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.RackHeightValuesList.forEach((el) => rackHeightOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.ptoValuesList.forEach((el) => ptoOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.testsTypeValuesList.forEach((el) => testsTypeOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.staticTestsEquipmentProvisionValuesList.forEach((el) => staticTestsEquipmentProvisionOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.controlCargoTypeValuesList.forEach((el) => controlCargoTypeOptions.push(<option key={'value_' + el} value={el}>{el}</option>))
+        DataLists.controlCargoDeliveryValuesList.forEach((el) => controlCargoDeliveryOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
+        DataLists.eqCalculationsTypeValuesList.forEach((el) => eqCalculationsTypeOptions.push(<option key={'value_' + el} value={el}>{el}</option>));
 
 
         for (let i = 1; i <= source.equipmentInfo.warehouseCount; i++) {
+            // warehousesTableRows.splice(0, warehousesTableRows.length);
+            warehousesTableRows = [];
+            for (let j = 0; j < 10; j++) {
+                warehousesTableRows.push(
+                    <div key={'table_rows_' + i + '_' + j}>
+                        <div style={{width: '82%'}}>
+                            <select onChange={(e) => this.updateWarehousePassports('passport', i-1, j, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].passports[j].passport}>
+                                {isPassportOptions}
+                            </select>
+                        </div>
+                        <div style={{width: '93%'}}>
+                            <select onChange={(e) => this.updateWarehousePassports('eqManufacturer', i-1, j, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].passports[j].equipmentManufacturer}>
+                                {equipmentManufacturerOptions}
+                            </select>
+                        </div>
+                        <div style={{width: '140%'}}>
+                            <select onChange={(e) => this.updateWarehousePassports('eqType', i-1, j, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].passports[j].equipmentType}>
+                                {equipmentTypeOptions}
+                            </select>
+                        </div>
+                        <div style={{width: '92%'}}>
+                            <input onChange={(e) => this.updateWarehousePassports('epmCount', i-1, j, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].passports[j].epmCount} type="text"/>
+                        </div>
+                        <div style={{width: '95%'}}>
+                            <select onChange={(e) => this.updateWarehousePassports('rackHeight', i-1, j, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].passports[j].rackHeight}>
+                                {rackHeightOptions}
+                            </select>
+                        </div>
+                        <div style={{width: '116.5%'}}>
+                            <input onChange={(e) => this.updateWarehousePassports('forCell', i-1, j, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].passports[j].ratedLoad.forCell} type="text"/>
+                        </div>
+                        <div style={{width: '117%'}}>
+                            <input  onChange={(e) => this.updateWarehousePassports('forPallet', i-1, j, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].passports[j].ratedLoad.forPallet} type="text"/>
+                        </div>
+                    </div>
+                );
+            }
+
             warehouses.push(
                 <div key={'object_fields_' + i} className={'kp-warehouse'}>
                     <div className={'object-title'}>
-                        <h4>Объект <span>{i} </span><span onClick={() => this.deleteWarehouse(i - 1)} style={{color: 'red', textDecoration: 'underline', cursor: 'pointer', userSelect: 'none'}}>(удалить)</span></h4>
+                        <h4>Объект <span>{i} </span><span onClick={() => this.deleteWarehouse(i-1)} style={{color: 'red', textDecoration: 'underline', cursor: 'pointer', userSelect: 'none'}}>(удалить)</span></h4>
                     </div>
                     <div>
                         <h4>Адрес места проведения работ: </h4>
-                        <input type="text"/>
+                        <input onChange={(e) => this.updateWarehouseValues('address', i-1, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].address} type="text"/>
                     </div>
                     <div>
                         <h4>Наименование объекта: </h4>
-                        <input type="text"/>
+                        <input onChange={(e) => this.updateWarehouseValues('name', i-1, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].name} type="text"/>
                     </div>
                     <div>
                         <h4>Суммарный объем хранения: </h4>
-                        <input type="text"/>
+                        <input onChange={(e) => this.updateWarehouseValues('storageVolume', i-1, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].storageVolume} type="text"/>
                     </div>
                     <div>
                         <h4>Температруный режим: </h4>
-                        <select />
+                        <select onChange={(e) => this.updateWarehouseValues('temp', i-1, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].temp}>
+                            {warehouseTemps}
+                        </select>
                     </div>
                     <div>
                         <h4>Время проведения работ: </h4>
                         <div style={{width: '100%'}}>
-                            <select />
-                            <select />
+                            <select onChange={(e) => this.updateWarehouseValues('nightDay', i-1, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].time.nightDay}>
+                                {nightDayOptions}
+                            </select>
+                            <select onChange={(e) => this.updateWarehouseValues('weekOrWeekend', i-1, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].time.weekOrWeekend}>
+                                {weekOrWeekendOptions}
+                            </select>
                         </div>
                     </div>
                     <div>
                         <h4>Предоставление техники: </h4>
-                        <select />
+                        <select onChange={(e) => this.updateWarehouseValues('equipmentProvision', i-1, e.target.value)} value={source.equipmentInfo.warehousesInfo[i-1].equipmentProvision}>
+                            {equipmentProvisionOptions}
+                        </select>
                     </div>
                 </div>,
-                <div key={'object_table_' + i} style={{border: '1px solid #c4c4c4'}} className={'kp-statictests'}>
+                <div key={'object_table_' + i} style={{border: '1px solid #c4c4c4', width: '100%'}} className={'kp-statictests'}>
                     <div className={'table-header'}>
                         <div style={{width: '35%'}}><p>Паспорт</p></div>
                         <div style={{width: '40%'}}><p>Производитель оборудования</p></div>
@@ -193,14 +310,45 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
                             </div>
                         </div>
                     </div>
-                    <div className={'table-rows'}>
-
+                    <div onClick={() => { this.setState({selectedWarehouse: i-1}) }} className={'table-rows'}>
+                        {warehousesTableRows}
                     </div>
                 </div>
             );
         }
 
         if (source.stillagesStaticTests.isTesting) {
+            let k = 0;
+            for (let i = 0; i < source.equipmentInfo.warehousesInfo.length; i++) {
+                for (let j = 0; j < source.equipmentInfo.warehousesInfo[i].passports.length; j++) {
+                    if (source.equipmentInfo.warehousesInfo[i].passports[j].passport !== '') {
+                        staticTestsTableRows.push(
+                            <div key={'static_table_row_' + i + '_' + j}>
+                                <div style={{width: '50%'}}>
+                                    <input readOnly={true} type={'text'} value={k + 1}/>
+                                </div>
+                                <div style={{width: '58%'}}>
+                                    <input type={'text'} readOnly={true} value={source.equipmentInfo.warehousesInfo[i].passports[j].passport} />
+                                </div>
+                                <div style={{width: '67.5%'}}>
+                                    <input type={'text'} readOnly={true} value={source.equipmentInfo.warehousesInfo[i].passports[j].equipmentManufacturer} />
+                                </div>
+                                <div style={{width: '100.5%'}}>
+                                    <input type={'text'} readOnly={true} value={source.equipmentInfo.warehousesInfo[i].passports[j].equipmentType} />
+                                </div>
+                                <div style={{width: '84%'}}>
+                                    <input type="text" readOnly={true} value={source.equipmentInfo.warehousesInfo[i].passports[j].ratedLoad.forCell} />
+                                </div>
+                                <div style={{width: '84%'}}>
+                                    <input type="text" readOnly={true} value={source.equipmentInfo.warehousesInfo[i].passports[j].ratedLoad.forPallet} />
+                                </div>
+                            </div>
+                        );
+                        k++;
+                    }
+                }
+            }
+            let testsCount = k;
             staticTests = [
                 <div key={'staticTests_table'} style={{border: '1px solid #c4c4c4'}} className={'kp-statictests'}>
                     <div className={'table-header'}>
@@ -216,38 +364,48 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
                             </div>
                         </div>
                     </div>
-                    <div className={'table-rows'}>
-
+                    <div className={'table-rows'} style={{ overflowY: 'auto' }}>
+                        {staticTestsTableRows}
                     </div>
                 </div>,
                 <div key={'staticTests_additional_fields'} className={'kp-generalinfo'}>
                     <div>
                         <h4>Всего испытаний: </h4>
-                        <input type="text"/>
+                        <input readOnly={true} value={testsCount} type="text"/>
                     </div>
                     <div>
                         <h4>Испытания проводятся с применением: </h4>
-                        <select />
+                        <select onChange={(e) => this.updateValue('testsType', e.target.value)} value={source.stillagesStaticTests.testsType}>
+                            {testsTypeOptions}
+                        </select>
                     </div>
                     <div>
                         <h4>Контрольные грузы/весы предоставляет: </h4>
-                        <select />
+                        <select onChange={(e) => this.updateValue('cargoProvision', e.target.value)} value={source.stillagesStaticTests.controlsProvision}>
+                            {staticTestsEquipmentProvisionOptions}
+                        </select>
                     </div>
                     <div>
                         <h4>Тип контрольных грузов: </h4>
-                        <select />
+                        <select onChange={(e) => this.updateValue('controlCargoType', e.target.value)} value={source.stillagesStaticTests.controlCargoType}>
+                            {controlCargoTypeOptions}
+                        </select>
                     </div>
                     <div>
                         <h4>Доставку контрольных грузов/весов осуществляет: </h4>
-                        <select />
+                        <select onChange={(e) => this.updateValue('controlCargoDelivery', e.target.value)} value={source.stillagesStaticTests.controlCargoDelivery}>
+                            {controlCargoDeliveryOptions}
+                        </select>
                     </div>
                     <div>
                         <h4>Технику для проведения статических испытаний предоставляет: </h4>
-                        <select />
+                        <select onChange={(e) => this.updateValue('staticTestsEquipmentProvision', e.target.value)} value={source.stillagesStaticTests.staticTestsEquipmentProvision}>
+                            {controlCargoDeliveryOptions}
+                        </select>
                     </div>
                     <div>
                         <h4>Стоимость, руб. с НДС: </h4>
-                        <input type="text"/>
+                        <input onChange={(e) => this.updateValue('staticTestsPrice', e.target.value)} value={source.stillagesStaticTests.price} type="text"/>
                     </div>
                 </div>
             ];
@@ -311,15 +469,17 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
                 <div className={'kp-warehouses-footer'}>
                     <div>
                         <h4>Полное техническое освидетельствование: </h4>
-                        <select />
+                        <select onChange={(e) => this.updateValue('pto', e.target.value)} value={source.equipmentInfo.pto}>
+                            {ptoOptions}
+                        </select>
                     </div>
                     <div>
                         <h4>Стоимость, руб с НДС 20%: </h4>
-                        <input type="text"/>
+                        <input onChange={(e) => this.updateValue('eqInfoPrice', e.target.value)} value={source.equipmentInfo.price} type="text"/>
                     </div>
                     <div>
                         <h4>Продолжительность работ, раб.дней: </h4>
-                        <input type="text"/>
+                        <input onChange={(e) => this.updateValue('eqInfoDays', e.target.value)} value={source.equipmentInfo.days} type="text"/>
                     </div>
                 </div>
                 <div className={'titles'}>
@@ -339,8 +499,83 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
                         <div style={{width: '35%'}}><p>Стоимость за 1 тип, руб., в т.ч. НДС</p></div>
                         <div style={{width: '35%'}}><p>Сумма, руб., в т.ч. НДС</p></div>
                     </div>
-                    <div className={'table-rows'}>
-
+                    <div className={'table-rows calculations-rows'} style={{height: 'auto'}}>
+                        <div>
+                            <div style={{width: '80%'}}>
+                                <input readOnly={true} value={'Проверочные расчеты несущей способности'} />
+                            </div>
+                            <div style={{width: '80%'}}>
+                                <select>
+                                    {eqCalculationsTypeOptions}
+                                </select>
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type={'text'} />
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type={'text'} />
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type="text" />
+                            </div>
+                        </div>
+                        <div>
+                            <div style={{width: '80%'}}>
+                                <input readOnly={true} value={'Разработка и изготовление технического паспорта'} />
+                            </div>
+                            <div style={{width: '80%'}}>
+                                <select>
+                                    {eqCalculationsTypeOptions}
+                                </select>
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type={'text'} />
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type={'text'} />
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type="text" />
+                            </div>
+                        </div>
+                        <div>
+                            <div style={{width: '80%'}}>
+                                <input readOnly={true} value={'Проверочные расчеты несущей способности'} />
+                            </div>
+                            <div style={{width: '80%'}}>
+                                <select>
+                                    {eqCalculationsTypeOptions}
+                                </select>
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type={'text'} />
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type={'text'} />
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type="text" />
+                            </div>
+                        </div>
+                        <div>
+                            <div style={{width: '80%'}}>
+                                <input readOnly={true} value={'Разработка и изготовление технического паспорта'} />
+                            </div>
+                            <div style={{width: '80%'}}>
+                                <select>
+                                    {eqCalculationsTypeOptions}
+                                </select>
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type={'text'} />
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type={'text'} />
+                            </div>
+                            <div style={{width: '35%'}}>
+                                <input type="text" />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className={'kp-generalinfo'}>
