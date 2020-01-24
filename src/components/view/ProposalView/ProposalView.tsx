@@ -70,8 +70,12 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
             case 'staticTestsPrice':
                 source.stillagesStaticTests.price = value;
                 break;
-
-
+            case 'eqtCalculations1Type':
+                source.equipmentCalculations.eqtCalculations1.type = value;
+                break;
+            case 'eqtCalculations2Type':
+                source.equipmentCalculations.eqtCalculations2.type = value;
+                break;
 
             case 'isStaticTests':
                 source.stillagesStaticTests.isTesting = !source.stillagesStaticTests.isTesting;
@@ -505,18 +509,18 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
                                 <input readOnly={true} value={'Проверочные расчеты несущей способности'} />
                             </div>
                             <div style={{width: '80%'}}>
-                                <select>
+                                <select onChange={(e) => this.updateValue('eqtCalculations1Type', e.target.value)} value={source.equipmentCalculations.eqtCalculations1.type}>
                                     {eqCalculationsTypeOptions}
                                 </select>
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type={'text'} />
+                                <input value={source.equipmentCalculations.eqtCalculations1.typesCount} type={'text'} />
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type={'text'} />
+                                <input value={source.equipmentCalculations.eqtCalculations1.oneTypePrice.toFixed(2)} type={'text'} />
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type="text" />
+                                <input value={source.equipmentCalculations.eqtCalculations1.fullPrice.toFixed(2)} type="text" />
                             </div>
                         </div>
                         <div>
@@ -524,18 +528,18 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
                                 <input readOnly={true} value={'Разработка и изготовление технического паспорта'} />
                             </div>
                             <div style={{width: '80%'}}>
-                                <select>
+                                <select value={source.equipmentCalculations.needPassport1.type}>
                                     {eqCalculationsTypeOptions}
                                 </select>
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type={'text'} />
+                                <input value={source.equipmentCalculations.needPassport1.typesCount} type={'text'} />
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type={'text'} />
+                                <input value={source.equipmentCalculations.needPassport1.oneTypePrice.toFixed(2)} type={'text'} />
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type="text" />
+                                <input value={source.equipmentCalculations.needPassport1.fullPrice.toFixed(2)} type="text" />
                             </div>
                         </div>
                         <div>
@@ -543,18 +547,18 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
                                 <input readOnly={true} value={'Проверочные расчеты несущей способности'} />
                             </div>
                             <div style={{width: '80%'}}>
-                                <select>
+                                <select onChange={(e) => this.updateValue('eqtCalculations2Type', e.target.value)} value={source.equipmentCalculations.eqtCalculations2.type}>
                                     {eqCalculationsTypeOptions}
                                 </select>
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type={'text'} />
+                                <input value={source.equipmentCalculations.eqtCalculations2.typesCount} type={'text'} />
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type={'text'} />
+                                <input value={source.equipmentCalculations.eqtCalculations2.oneTypePrice.toFixed(2)} type={'text'} />
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type="text" />
+                                <input value={source.equipmentCalculations.eqtCalculations2.fullPrice.toFixed(2)} type="text" />
                             </div>
                         </div>
                         <div>
@@ -562,18 +566,18 @@ export default class ProposalView extends Component<IProposalViewProps, IProposa
                                 <input readOnly={true} value={'Разработка и изготовление технического паспорта'} />
                             </div>
                             <div style={{width: '80%'}}>
-                                <select>
+                                <select value={source.equipmentCalculations.needPassport2.type}>
                                     {eqCalculationsTypeOptions}
                                 </select>
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type={'text'} />
+                                <input value={source.equipmentCalculations.needPassport2.typesCount} type={'text'} />
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type={'text'} />
+                                <input value={source.equipmentCalculations.needPassport2.oneTypePrice.toFixed(2)} type={'text'} />
                             </div>
                             <div style={{width: '35%'}}>
-                                <input type="text" />
+                                <input value={source.equipmentCalculations.needPassport2.fullPrice.toFixed(2)} type="text" />
                             </div>
                         </div>
                     </div>
