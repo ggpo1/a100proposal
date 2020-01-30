@@ -153,4 +153,10 @@ export default class DataLists {
         'отдельно стоящий самонесущий стеллаж',
         'отдельно стоящий шаттловый стеллаж'
     ];
+    public static YesOrNoValuesList: Array<string> = [
+        'Да',
+        'Нет'
+    ];
+
+
 }

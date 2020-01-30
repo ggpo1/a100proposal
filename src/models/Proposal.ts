@@ -61,29 +61,29 @@ interface EquipmentCalculations {
     eqtCalculations1: {
         type: string,
         typesCount: string,
-        oneTypePrice: Decimal,
-        fullPrice: Decimal
+        oneTypePrice: string,
+        fullPrice: string
     },
     needPassport1: {
         type: string,
         typesCount: string,
-        oneTypePrice: Decimal,
-        fullPrice: Decimal
+        oneTypePrice: string,
+        fullPrice: string
     },
     eqtCalculations2: {
         type: string,
         typesCount: string,
-        oneTypePrice: Decimal,
-        fullPrice: Decimal
+        oneTypePrice: string,
+        fullPrice: string
     },
     needPassport2: {
         type: string,
         typesCount: string,
-        oneTypePrice: Decimal,
-        fullPrice: Decimal
+        oneTypePrice: string,
+        fullPrice: string
     },
-    windOrSnowTests: boolean,
-    price: Decimal,
+    windOrSnowTests: string,
+    price: string,
     daysForWork: string
 }
 
@@ -93,8 +93,9 @@ export default interface Proposal {
     equipmentInfo: equipmentInformation,
     stillagesStaticTests: staticTests
     equipmentCalculations: EquipmentCalculations,
-    fullPrice: Decimal,
-    paymentType: string
+    fullPrice: string | (() => number) | (null),
+    paymentType: string,
+    paymentDays: string,
     manager: {
         fullName: string,
         position: string,
